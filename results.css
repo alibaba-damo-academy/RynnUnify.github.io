@@ -59,3 +59,12 @@
 @media(max-width:640px){.results-six-grid{grid-template-columns:1fr;gap:20px}.results-six-grid .score-chart{padding:24px}.results-six-grid .score-chart h3{font-size:26px}.score-chart header{min-height:58px}.model-label,.paired-chart .model-label{font-size:11px}.paired-chart .result-bar>strong{font-size:12px}.score-note{font-size:10px;min-height:0}.result-tables{display:block}.benchmark-figure-caption{display:block;font-size:10px}.benchmark-figure-caption>a{display:inline-block;margin-top:8px}.results-chapter-heading{display:block}.results-chapter-heading>span{display:block;margin-top:9px}.model-columns{gap:18px}}
 @media(max-width:380px){.results-six-grid .score-chart{padding:20px 14px}.paired-chart .result-bar>strong{font-size:10px}.model-label,.paired-chart .model-label{font-size:9px}.model-columns{gap:12px}.pair-legend{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.result-bar>i{transform:none!important;transition:none!important}}
+
+/* Prominent controls for complete results across all compared model families. */
+.result-tables{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.results-table-detail>summary{font-size:16px;font-weight:500;color:#dbc5f1;padding:18px 4px;line-height:1.5;gap:16px}
+.results-table-detail>summary>span{font-size:23px;flex:none}
+.results-table-detail>summary:hover{color:#f1e1ff}
+.wam-results-detail{margin-top:30px;padding-top:8px}
+.wam-results-detail .results-chapter-heading h3{font-size:24px}
+@media(max-width:950px){.result-tables{grid-template-columns:1fr}.results-table-detail>summary{font-size:16px}}
