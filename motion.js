@@ -4,11 +4,6 @@
   const root=document.documentElement;
   const film=document.querySelector('#opening-film');
   const toggle=document.querySelector('#film-toggle');
-  const introControls=document.querySelector('#intro-controls');
-  const introProgress=document.querySelector('#intro-progress');
-  const introSeconds=4.8;
-  let introStart=null;
-  let introActive=root.classList.contains('intro-pending');
   let manuallyPaused=reduced;
   let filmPlayPending=false;
   film.muted=true;
@@ -17,34 +12,11 @@
   film.loop=true;
   film.autoplay=!reduced;
   film.preload='auto';
-  function finishIntro(){
-    if(!introActive)return;
-    introActive=false;
-    clearTimeout(window.__rynnIntroFallback);
-    const focusedSkip=document.activeElement===document.querySelector('#intro-skip');
-    root.classList.remove('intro-pending');
-    introControls.setAttribute('aria-hidden','true');
-    if(focusedSkip)document.querySelector('#hero-title').focus({preventScroll:true});
-  }
-  introControls.setAttribute('aria-hidden',String(!introActive));
-  document.querySelector('#intro-skip').addEventListener('click',finishIntro);
-  film.addEventListener('playing',()=>{if(introActive&&introStart===null)introStart=film.currentTime;});
-  film.addEventListener('timeupdate',()=>{
-    if(!introActive||introStart===null)return;
-    const progress=Math.max(0,Math.min(1,(film.currentTime-introStart)/introSeconds));
-    introProgress.style.transform=`scaleX(${progress})`;
-    if(progress>=1)finishIntro();
-  });
-  film.addEventListener('error',finishIntro);
-  film.addEventListener('ended',finishIntro);
-  addEventListener('hashchange',finishIntro);
-  addEventListener('scroll',()=>{if(scrollY>40)finishIntro();},{passive:true});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')finishIntro();});
   function syncFilmButton(){toggle.textContent=film.paused?'▷':'Ⅱ';toggle.setAttribute('aria-label',film.paused?'Play opening film':'Pause opening film');}
   function playFilm(){
     if(filmPlayPending||!film.paused)return;
     filmPlayPending=true;
-    film.play().then(syncFilmButton).catch(()=>{syncFilmButton();finishIntro();}).finally(()=>{filmPlayPending=false;});
+    film.play().then(syncFilmButton).catch(syncFilmButton).finally(()=>{filmPlayPending=false;});
   }
   function resumeFilm(){if(!manuallyPaused&&!document.hidden)playFilm();}
   toggle.addEventListener('click',()=>{if(film.paused){manuallyPaused=false;playFilm();}else{manuallyPaused=true;film.pause();}});
