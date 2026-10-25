@@ -52,15 +52,13 @@
     $('#plan-select').value=plan.id;
     $('#plan-title').textContent = plan.title;
     $('#plan-goal').textContent = plan.task;
-    $('#plan-step-count').textContent = `${plan.steps.length} predicted subtasks${plan.excerpt ? ' · '+plan.excerptLabel+' excerpt' : ''}`;
-    $('#plan-media-type').textContent='Predicted video';
     $('#current-subtask').textContent = plan.steps[0]?.text || '';
     player.poster = plan.poster;
     player.src = plan.video;
     player.load();
     const previews=plan.previewFrames||[];
     $('#plan-video-previews').hidden=!previews.length;
-    $('#plan-video-previews').innerHTML=previews.length?`<span>${previews.length} preview frames</span><div class="video-preview-frames">${previews.map((f,i)=>`<button data-preview-time="${f.sourceTime}" aria-label="Play from preview frame ${i+1}" aria-pressed="${i===0}"><img src="${esc(f.image)}" alt="" loading="lazy"><small>${String(i+1).padStart(2,'0')}</small></button>`).join('')}</div>`:'';
+    $('#plan-video-previews').innerHTML=previews.length?`<div class="video-preview-frames">${previews.map((f,i)=>`<button data-preview-time="${f.sourceTime}" aria-label="Play from preview frame ${i+1}" aria-pressed="${i===0}"><img src="${esc(f.image)}" alt="" loading="lazy"><small>${String(i+1).padStart(2,'0')}</small></button>`).join('')}</div>`:'';
     $('#plan-steps').innerHTML = plan.steps.map((s,i) => `<button class="plan-step" data-step="${i}" ${i===0 ? 'aria-current="step"' : ''} aria-label="Inspect step ${i+1}: ${esc(s.text)}"><span class="step-num">${String(i+1).padStart(2,'0')}</span><span class="step-copy">${esc(s.text)}</span>${s.poster ? `<img src="${esc(s.poster)}" alt="Generated scene for step ${i+1}" loading="lazy">` : ''}</button>`).join('');
     $('#plan-steps').scrollTop = 0;
     lastActiveStep = -1;
@@ -100,7 +98,7 @@
     selectedCase = D.generated.find(c => c.id === id) || D.generated[0];
     const c = selectedCase;
     $('#case-picker').querySelectorAll('[data-case]').forEach(b => b.setAttribute('aria-pressed',String(b.dataset.case === id)));
-    $('#case-detail').innerHTML = `<div class="reasoning-context"><div class="case-meta"><span>${esc(c.title)}</span><span class="mode-tag">${c.mode.toUpperCase()}</span></div><h3 class="case-question">${esc(c.question)}</h3><div class="input-views ${c.inputs.length===1 ? 'single' : ''}">${c.inputs.map((src,i) => `<img src="${esc(src)}" alt="Given observation ${i+1}" loading="lazy">`).join('')}</div><p class="input-label">${c.inputs.length>1 ? 'Given views 1 and 2' : 'Given observation'}</p><div class="prompt-block"><h4>G → VIDEO PROMPT <span>(abridged)</span></h4><p>${esc(c.prompt)}</p></div></div><div class="reasoning-output"><span class="small-label">MODEL-GENERATED VIDEO</span><video controls loop playsinline preload="none" poster="${esc(c.poster)}" src="${esc(c.video)}" aria-label="Generated video: ${esc(c.question)}"></video><div class="video-meta"><span>${c.duration.toFixed(2)} s visual prediction · loops</span><button id="replay-prediction">Replay ↻</button></div><div class="answer-line"><span class="answer-label">ANSWER</span><strong>${esc(c.answer.replace(/^[A-D]\.\s*/,''))}</strong>${c.points.length ? '<button class="coordinate-button" id="show-coordinates">View prediction ↗</button>' : ''}</div></div>`;
+    $('#case-detail').innerHTML = `<div class="reasoning-context"><div class="case-meta"><span>${esc(c.title)}</span><span class="mode-tag">${c.mode.toUpperCase()}</span></div><h3 class="case-question">${esc(c.question)}</h3><div class="input-views ${c.inputs.length===1 ? 'single' : ''}">${c.inputs.map((src,i) => `<img src="${esc(src)}" alt="Given observation ${i+1}" loading="lazy">`).join('')}</div><p class="input-label">${c.inputs.length>1 ? 'Given views 1 and 2' : 'Given observation'}</p><div class="prompt-block"><h4>G → VIDEO PROMPT <span>(abridged)</span></h4><p>${esc(c.prompt)}</p></div></div><div class="reasoning-output"><span class="small-label">MODEL-GENERATED VIDEO</span><video controls loop playsinline preload="none" poster="${esc(c.poster)}" src="${esc(c.video)}" aria-label="Generated video: ${esc(c.question)}"></video><div class="video-meta"><button id="replay-prediction">Replay ↻</button></div><div class="answer-line"><span class="answer-label">ANSWER</span><strong>${esc(c.answer.replace(/^[A-D]\.\s*/,''))}</strong>${c.points.length ? '<button class="coordinate-button" id="show-coordinates">View prediction ↗</button>' : ''}</div></div>`;
     $('#show-coordinates')?.addEventListener('click', () => showCoordinates(c));
     $('#replay-prediction').addEventListener('click',()=>{const v=$('#case-detail video');v.currentTime=0;v.play().catch(()=>{});});
     videoObserver.observe($('#case-detail video'));
